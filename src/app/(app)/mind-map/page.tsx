@@ -1,11 +1,11 @@
 'use client'
 
-import { LandingPage } from '@/components/landing-page'
+import { ZoomableImage } from '@/components/zoomable-image'
 import React from 'react'
 
 function page() {
   return (
-    <LandingPage />
+    <ZoomableImage />
   )
 }
 

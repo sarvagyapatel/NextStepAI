@@ -1,11 +1,11 @@
 'use client'
 
-import { LandingPage } from '@/components/landing-page'
+import UserProfileSetup from '@/components/user-profile-setup'
 import React from 'react'
 
 function page() {
   return (
-    <LandingPage />
+    <UserProfileSetup />
   )
 }
 

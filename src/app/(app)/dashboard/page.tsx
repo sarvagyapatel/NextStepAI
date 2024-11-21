@@ -1,11 +1,11 @@
 'use client'
 
-import { LandingPage } from '@/components/landing-page'
+import UserDashboard from '@/components/user-dashboard'
 import React from 'react'
 
 function page() {
   return (
-    <LandingPage />
+    <UserDashboard />
   )
 }
 

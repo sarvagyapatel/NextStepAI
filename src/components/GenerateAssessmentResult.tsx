@@ -8,7 +8,13 @@ import { RecommendationsDisplayComponent } from './recommendations-display';
 
 const WS_URL = 'ws://localhost:3000';
 
-export function GenerateAssessmentResult(testType:string) {
+type Type = {
+  testType: {
+    type: string
+  }
+}
+
+export function GenerateAssessmentResult(testType:Type) {
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +41,20 @@ export function GenerateAssessmentResult(testType:string) {
           wsRef.current = ws;
 
           ws.onopen = () => {
-            if(testType.testType.type==="aptitude") ws.send(JSON.stringify(res.data.user.aptitudeQuestions));
-            if(testType.testType.type==="skills") ws.send(JSON.stringify(res.data.user.skillQuestions));
+            if(testType.testType.type==="aptitude") {
+              const message={
+                type: "evaluation",
+                content: res.data.user.aptitudeQuestions
+              }
+              ws.send(JSON.stringify(message));
+            }
+            if(testType.testType.type==="skills") {
+              const message={
+                type: "evaluation",
+                content: res.data.user.skillQuestions
+              }
+              ws.send(JSON.stringify(message));
+            }
             setIsLoading(false);
             setError(null);
           };

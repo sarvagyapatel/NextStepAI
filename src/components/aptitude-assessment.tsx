@@ -35,11 +35,18 @@ interface result {
   assessment: string
 }
 
+type Type = {
+  testType: {
+    type: string
+  }
+}
+
+
 const formSchema = z.object({
   answers: z.record(z.string())
 })
 
-export function AptitudeAssessment(testType: string) {
+export function AptitudeAssessment(testType: Type) {
   const [questions, setQuestions] = useState<Question[]>([])
   const [timeRemaining, setTimeRemaining] = useState(3600) // 1 hour in seconds
   const [, setProgress] = useState(0)
@@ -61,13 +68,21 @@ export function AptitudeAssessment(testType: string) {
     if (!wsRef.current) {
       let ind = 1;
 
-      const message = {
-        type:"generateAptitudeQuestions",
+      if(testType.testType.type==="skills"){
+        axios.post('/api/get-user', {}, { withCredentials: true }).then((res)=>{
+          const message = {
+            type:`generateskillsQuestions`,
+            content: res.data.user.skills
+          }
+            console.log(message)
+            ws.send(JSON.stringify(message));
+        })
+      }else{
+        const message = {
+          type:`generateaptitudeQuestions`
+        }
+          ws.send(JSON.stringify(message));
       }
-      
-      ws.onopen = () => {
-        ws.send(JSON.stringify(message));
-      };
 
       ws.onmessage = (event) => {
         const newQuestion = JSON.parse(event.data);

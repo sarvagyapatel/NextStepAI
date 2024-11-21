@@ -12,12 +12,25 @@ import { BarChart, BookOpen, BriefcaseIcon, GraduationCap, TrendingUp, User, Bra
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 
+type UserType = {
+  fullname: string,
+  email: string,
+  ambitions: string
+}
+
+const user = {
+  fullname: "Jane Doe",
+  email: "jane.doe@example.com",
+  ambitions: "sde",
+  avatar: "/placeholder.svg?height=100&width=100",
+  careerGoal: "Full Stack Developer",
+  skillsProgress: 65,
+  coursesCompleted: 8,
+  totalCourses: 12
+}
+
 export default function UserDashboard() {
-  const [userData, setUserData] = useState({});
-  // const [aptitudeQuestions, setAptitudeQuestions] = useState([]);
-  // const [skillQuestions, setSkillQuestions] = useState([]);
-  // const [careerRecommendations, setCareerRecommendations] = useState([]);
-  // const [mindMap, setMindMap] = useState(null);
+  const [userData, setUserData] = useState<UserType>(user);
   const router = useRouter();
 
   useEffect(() => {
@@ -29,15 +42,7 @@ export default function UserDashboard() {
     getUserData();
   }, [])
 
-  const user = {
-    name: "Jane Doe",
-    email: "jane.doe@example.com",
-    avatar: "/placeholder.svg?height=100&width=100",
-    careerGoal: "Full Stack Developer",
-    skillsProgress: 65,
-    coursesCompleted: 8,
-    totalCourses: 12
-  }
+
 
   const recentActivities = [
     { type: 'course', name: 'Introduction to React', date: '2023-06-15' },
@@ -80,7 +85,7 @@ export default function UserDashboard() {
             <div className="flex items-center space-x-4">
               <Avatar className="h-20 w-20">
                 <AvatarImage src={user.avatar} alt={userData.fullname} />
-                <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                <AvatarFallback>{user.fullname.split(' ').map(n => n[0]).join('')}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-xl font-semibold">{userData.fullname}</p>

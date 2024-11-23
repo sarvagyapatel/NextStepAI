@@ -37,8 +37,13 @@ interface result {
 
 type Type = {
   testType: {
-    type: string
+    type: string,
   }
+}
+
+type Messagetype = {
+  type: string,
+  content?: string
 }
 
 
@@ -63,49 +68,48 @@ export function AptitudeAssessment(testType: Type) {
   useEffect(() => {
     if (mountedRef.current) return; // Prevent multiple runs
     mountedRef.current = true;
-    const ws = new WebSocket(WS_URL)
 
-    if (!wsRef.current) {
-      let ind = 1;
+    axios.post('/api/get-user', {}, { withCredentials: true }).then((res) => {
+      const message: Messagetype = {
+        type: `generateaptitudeQuestions`
+      }
 
-      if(testType.testType.type==="skills"){
-        axios.post('/api/get-user', {}, { withCredentials: true }).then((res)=>{
-          const message = {
-            type:`generateskillsQuestions`,
-            content: res.data.user.skills
-          }
-            console.log(message)
-            ws.send(JSON.stringify(message));
-        })
-      }else{
-        const message = {
-          type:`generateaptitudeQuestions`
-        }
+      if (testType.testType.type === "skills") {
+        message.type = "generateskillsQuestions"
+        message.content = res.data.user.skills;
+      }
+
+      if (!wsRef.current) {
+        let ind = 1;
+        const ws = new WebSocket(WS_URL)
+        ws.onopen = () => {
           ws.send(JSON.stringify(message));
-      }
+        };
 
-      ws.onmessage = (event) => {
-        const newQuestion = JSON.parse(event.data);
-        const que: Question = {
-          id: ind,
-          question: newQuestion.question,
-          answer: newQuestion.answer,
-          type: newQuestion.type,
-          options: newQuestion.options
+
+        ws.onmessage = (event) => {
+          const newQuestion = JSON.parse(event.data);
+          const que: Question = {
+            id: ind,
+            question: newQuestion.question,
+            answer: newQuestion.answer,
+            type: newQuestion.type,
+            options: newQuestion.options
+          }
+          ind++;
+          setQuestions((prevQuestions) => [...prevQuestions, que])
+          setProgress((prevProgress) => prevProgress + (100 / 10)) // Assuming 20 questions total
         }
-        ind++;
-        setQuestions((prevQuestions) => [...prevQuestions, que])
-        setProgress((prevProgress) => prevProgress + (100 / 10)) // Assuming 20 questions total
+
+
+        return () => {
+          if (wsRef.current) {
+            wsRef.current.close(); // Clean up WebSocket connection on unmount
+            wsRef.current = null;
+          }
+        };
       }
-
-
-      return () => {
-        if (wsRef.current) {
-          wsRef.current.close(); // Clean up WebSocket connection on unmount
-          wsRef.current = null;
-        }
-      };
-    }
+    })
   }, [])
 
   useEffect(() => {

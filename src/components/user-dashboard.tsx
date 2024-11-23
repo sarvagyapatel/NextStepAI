@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { BarChart, BookOpen, BriefcaseIcon, GraduationCap, TrendingUp, User, Brain, Map, FileQuestion } from 'lucide-react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import GemmaChat from './gemma-chat'
 
 type UserType = {
   fullname: string,
@@ -125,13 +126,14 @@ export default function UserDashboard() {
 
       <div className="mt-6">
         <Tabs defaultValue="activities">
-          <TabsList>
-            <TabsTrigger value="activities">Recent Activities</TabsTrigger>
-            <TabsTrigger value="aptitude">Aptitude Questions</TabsTrigger>
-            <TabsTrigger value="skill">Skill Questions</TabsTrigger>
-            <TabsTrigger value="career">Career Recommendations</TabsTrigger>
-            <TabsTrigger value="mindmap">Mind Map</TabsTrigger>
-            <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+          <TabsList className='gap-2'>
+            <TabsTrigger className='font-semibold' value="activities">Recent Activities</TabsTrigger>
+            <TabsTrigger className='font-semibold' value="aptitude">Aptitude Questions</TabsTrigger>
+            <TabsTrigger className='font-semibold' value="skill">Skill Questions</TabsTrigger>
+            <TabsTrigger className='font-semibold' value="career">Career Recommendations</TabsTrigger>
+            <TabsTrigger className='font-semibold' value="mindmap">Mind Map</TabsTrigger>
+            <TabsTrigger className='font-semibold' value="recommendations">Recommendations</TabsTrigger>
+            <TabsTrigger className='font-semibold' value="query">Ask Query</TabsTrigger>
           </TabsList>
           <TabsContent value="activities">
             <Card>
@@ -244,6 +246,17 @@ export default function UserDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+          <TabsContent value="query">
+            <Card>
+              {/* <CardHeader>
+                <CardTitle>Career Recommendations</CardTitle>
+                <CardDescription>Personalized career recommendations based on your profile</CardDescription>
+              </CardHeader> */}
+              <CardContent className='flex justify-center w-full'>
+                <GemmaChat />
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
 
@@ -284,6 +297,7 @@ export default function UserDashboard() {
           </CardContent>
         </Card>
       </div>
+      
     </div>
   )
 }
